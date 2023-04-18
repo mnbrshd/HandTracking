@@ -18,7 +18,22 @@ while True:
 
     if results.multi_hand_landmarks:
         for handLandmark in results.multi_hand_landmarks:
+            for id, lm in enumerate(handLandmark.landmark):
+                h, w, c = img.shape
+                cx, cy = int(lm.x*w), int(lm.y*h)
+                print(id, cx, cy)
+
+                if id == 4:
+                    cv2.circle(img, (cx, cy), 15, (255, 0, 255), cv2.FILLED)
+
             mpDraw.draw_landmarks(img, handLandmark, mpHands.HAND_CONNECTIONS)
+
+    cTime = time.time()
+    fps = 1/(cTime-pTime)
+    pTime = cTime
+
+    cv2.putText(img, f"FPS: {int(fps)}", (10, 70), cv2.FONT_HERSHEY_COMPLEX,
+                3, (255,0, 255), 3)
 
     cv2.imshow('Image', img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
